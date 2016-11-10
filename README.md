@@ -1,0 +1,2 @@
+# SnobDictionary
+Sesquipedalian-learning assistance.
