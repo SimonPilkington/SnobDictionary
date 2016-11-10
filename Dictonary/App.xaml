@@ -1,0 +1,17 @@
+﻿<Application x:Class="Dictonary.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Dictonary"
+			 xmlns:system="clr-namespace:System;assembly=mscorlib"
+			 xmlns:converter="clr-namespace:Dictonary.Converters"
+             StartupUri="MainWindow.xaml">
+	<Application.Resources>		
+		<ControlTemplate TargetType="Button" x:Key="ClickableContent">
+			<ContentPresenter/>
+		</ControlTemplate>
+		<system:String x:Key="DictionaryUri">https://wordnik.com/words/</system:String>
+		<converter:WordToDictonaryUriConverter BaseUri="{StaticResource DictionaryUri}" x:Key="WordToDictionaryUrlConverter"/>
+		<converter:BoolToVisibilityConverter VisibleOnTrue="False" x:Key="ReverseBoolToVisibilityConverter"/>
+		<converter:BoolToVisibilityConverter VisibleOnTrue="True" x:Key="BoolToVisibilityConverter"/>
+	</Application.Resources>
+</Application>

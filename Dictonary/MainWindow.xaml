@@ -1,0 +1,115 @@
+﻿<Window x:Class="Dictonary.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:util="clr-namespace:Dictonary.Util"
+        xmlns:viewmodel="clr-namespace:Dictonary.ViewModels"
+		xmlns:styleSelectors="clr-namespace:Dictonary.Selectors.StyleSelectors"
+		xmlns:templateSelectors="clr-namespace:Dictonary.Selectors.TemplateSelectors"
+		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+		xmlns:Behaviors="clr-namespace:Dictonary.Behaviors"
+        mc:Ignorable="d"
+        Title="Snob Dictionary" Height="720" Width="1280" MinHeight="480" MinWidth="853">
+	<Window.DataContext>
+		<viewmodel:MainViewModel/>
+	</Window.DataContext>
+
+	<Window.Resources>
+		<HierarchicalDataTemplate ItemsSource="{Binding Children}" x:Key="TreeViewCategoryTemplate">
+			<StackPanel>
+				<TextBlock Text="{Binding Text}" Visibility="{Binding IsRenaming, Converter={StaticResource ReverseBoolToVisibilityConverter}}">
+					<TextBlock.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Add new subcategory" Command="{Binding AddSubcategoryCommand}" CommandParameter="{Binding .}"/>
+							<MenuItem Header="Add current word to category" Command="{Binding AddWordToCategoryCommand}" CommandParameter="{Binding .}"/>
+							<MenuItem Header="Rename" Command="{Binding StartRenameCommand}"/>
+						</ContextMenu>
+					</TextBlock.ContextMenu>
+					<i:Interaction.Behaviors>
+						<Behaviors:DragBehavior AllowedEffects="Move"/>
+						<Behaviors:DropBehavior/>
+					</i:Interaction.Behaviors>
+				</TextBlock>
+				<TextBox Text="{Binding Text}" Visibility="{Binding IsRenaming, Converter={StaticResource BoolToVisibilityConverter}}"
+						 IsVisibleChanged="RenameTextBox_IsVisibleChanged">
+					<i:Interaction.Behaviors>
+						<Behaviors:KeyPressReactionBehavior Key="Esc" Command="{Binding StopRenameCommand}"/>
+						<Behaviors:KeyPressReactionBehavior Key="Return" Command="{Binding StopRenameCommand}"/>
+					</i:Interaction.Behaviors>
+					<i:Interaction.Triggers>
+						<i:EventTrigger EventName="LostFocus">
+							<i:InvokeCommandAction Command="{Binding StopRenameCommand}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+				</TextBox>
+				<i:Interaction.Behaviors>
+					<Behaviors:DoubleClickBehavior Button="Left" Command="{Binding StartRenameCommand}"/>
+				</i:Interaction.Behaviors>
+			</StackPanel>
+		</HierarchicalDataTemplate>
+
+		<HierarchicalDataTemplate ItemsSource="{Binding Children}" x:Key="TreeViewWordTemplate">
+			<TextBlock Text="{Binding Text}">
+				<TextBlock.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Remove" Command="{Binding RemoveCommand}"/>
+					</ContextMenu>
+				</TextBlock.ContextMenu>
+				<i:Interaction.Behaviors>
+					<Behaviors:DragBehavior AllowedEffects="Move"/>
+					<Behaviors:DropBehavior/>
+				</i:Interaction.Behaviors>
+			</TextBlock>
+		</HierarchicalDataTemplate>
+
+		<Style TargetType="TreeViewItem" x:Key="TreeViewWordStyle">
+			<Setter Property="IsSelected" Value="{Binding IsSelected}" />
+		</Style>
+
+		<Style TargetType="TreeViewItem" x:Key="TreeViewCategoryStyle">
+			<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+		</Style>
+
+		<templateSelectors:TreeViewItemTemplateSelector WordDataTemplate="{StaticResource TreeViewWordTemplate}"
+										   CategoryDataTemplate="{StaticResource TreeViewCategoryTemplate}"
+										   x:Key="TreeViewDataTemplateSelector"/>
+		<styleSelectors:TreeViewItemContainerStyleSelector WordStyle="{StaticResource TreeViewWordStyle}"
+												 CategoryStyle="{StaticResource TreeViewCategoryStyle}"
+										   x:Key="TreeViewDataItemStyleSelector"/>
+	</Window.Resources>
+
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="File">
+				<MenuItem Header="Save" Command="{Binding SaveWordTreeCommand}"/>
+			</MenuItem>
+		</Menu>
+		<Grid DockPanel.Dock="Bottom">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="0.25*"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<StackPanel>
+				<DockPanel>
+					<Label Content="Search:"/>
+					<TextBox VerticalAlignment="Center" Text="{Binding SearchBoxString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+						<i:Interaction.Behaviors>
+							<Behaviors:KeyPressReactionBehavior Key="Return" Command="{Binding FindWordCommand}"/>
+						</i:Interaction.Behaviors>
+					</TextBox>
+				</DockPanel>
+				<TreeView ItemsSource="{Binding TreeViewItems}" BorderBrush="Transparent" 
+						  ItemTemplateSelector="{StaticResource TreeViewDataTemplateSelector}"
+						  ItemContainerStyleSelector="{StaticResource TreeViewDataItemStyleSelector}"/>
+			</StackPanel>
+			<WebBrowser x:Name="MainWebBrowser" Source="about:blank"
+						util:WebBrowserUtility.BindableSource="{Binding CurrentWord, Converter={StaticResource WordToDictionaryUrlConverter}}"
+						Grid.Column="1" Margin="10">
+				<i:Interaction.Behaviors>
+					<Behaviors:DisableWebBrowserDialogsBehavior/>
+				</i:Interaction.Behaviors>
+			</WebBrowser>
+		</Grid>
+	</DockPanel>
+</Window>
