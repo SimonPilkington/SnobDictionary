@@ -83,6 +83,7 @@ namespace Dictonary.ViewModels
 				throw new ArgumentException(nameof(categoryObject));
 
 			Children.Add(new WordViewModel(DataService.CurrentWord, category, DataService));
+			category.IsExpanded = true;
 		}
 
 		private void AddSubcategory(object categoryObject)
