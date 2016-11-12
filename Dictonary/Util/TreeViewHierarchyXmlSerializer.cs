@@ -31,7 +31,7 @@ namespace Dictonary.Util
 			var rootNode = xmlDocument.CreateElement(RootNode);
 
 			xmlDocument.AppendChild(rootNode);
-			AddAllItemsToTree(xmlDocument, rootNode, _viewModel.TreeViewItems);
+			AddAllItemsToTree(xmlDocument, rootNode, _viewModel.MainCategory.Children);
 
 			string destination = Properties.Settings.Default.WordTreeFilePath;
 			Directory.CreateDirectory(Path.GetDirectoryName(destination));
