@@ -93,6 +93,7 @@
     <Compile Include="Behaviors\Interfaces\IDraggable.cs" />
     <Compile Include="Behaviors\Interfaces\IDroppable.cs" />
     <Compile Include="Behaviors\KeyPressReactionBehavior.cs" />
+    <Compile Include="Behaviors\WebBrowserBindableSourceBehavior.cs" />
     <Compile Include="Behaviors\WindowClosingActionBehavior.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\WordToDictonaryUriConverter.cs" />

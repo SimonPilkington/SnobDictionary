@@ -99,26 +99,26 @@
 				<ColumnDefinition Width="0.25*"/>
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
-			<StackPanel>
-				<DockPanel>
-					<Label Content="Search:"/>
+			<TreeView ItemsSource="{Binding TreeViewItems}" BorderBrush="Transparent" 
+						  ItemTemplateSelector="{StaticResource TreeViewDataTemplateSelector}"
+						  ItemContainerStyleSelector="{StaticResource TreeViewDataItemStyleSelector}"/>
+			<DockPanel Grid.Column="1" >
+				<DockPanel DockPanel.Dock="Top" Margin="10">
+					<Label Content="Look up word:"/>
 					<TextBox VerticalAlignment="Center" Text="{Binding SearchBoxString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 						<i:Interaction.Behaviors>
 							<Behaviors:KeyPressReactionBehavior Key="Return" Command="{Binding FindWordCommand}"/>
 						</i:Interaction.Behaviors>
 					</TextBox>
 				</DockPanel>
-				<TreeView ItemsSource="{Binding TreeViewItems}" BorderBrush="Transparent" 
-						  ItemTemplateSelector="{StaticResource TreeViewDataTemplateSelector}"
-						  ItemContainerStyleSelector="{StaticResource TreeViewDataItemStyleSelector}"/>
-			</StackPanel>
-			<WebBrowser x:Name="MainWebBrowser" Source="about:blank"
-						util:WebBrowserUtility.BindableSource="{Binding CurrentWord, Converter={StaticResource WordToDictionaryUrlConverter}}"
-						Grid.Column="1" Margin="10">
-				<i:Interaction.Behaviors>
-					<Behaviors:DisableWebBrowserDialogsBehavior/>
-				</i:Interaction.Behaviors>
-			</WebBrowser>
+				<WebBrowser Source="about:blank" Margin="10,0,10,10">
+					<i:Interaction.Behaviors>
+						<Behaviors:DisableWebBrowserDialogsBehavior/>
+						<Behaviors:WebBrowserBindableSourceBehavior
+							BindableSource="{Binding CurrentWord, Converter={StaticResource WordToDictionaryUrlConverter}}"/>
+					</i:Interaction.Behaviors>
+				</WebBrowser>
+			</DockPanel>
 		</Grid>
 	</DockPanel>
 </Window>
