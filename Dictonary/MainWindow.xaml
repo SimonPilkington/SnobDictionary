@@ -9,10 +9,15 @@
 		xmlns:templateSelectors="clr-namespace:Dictonary.Selectors.TemplateSelectors"
 		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 		xmlns:Behaviors="clr-namespace:Dictonary.Behaviors"
+		xmlns:Services="clr-namespace:Dictonary.Services"
         mc:Ignorable="d"
         Title="Snob Dictionary" Height="720" Width="1280" MinHeight="480" MinWidth="853">
 	<Window.DataContext>
-		<viewmodel:MainViewModel/>
+		<viewmodel:MainViewModel>
+			<viewmodel:MainViewModel.DialogService>
+				<Services:DialogService/>
+			</viewmodel:MainViewModel.DialogService>
+		</viewmodel:MainViewModel>
 	</Window.DataContext>
 
 	<Window.Resources>
@@ -78,6 +83,10 @@
 												 CategoryStyle="{StaticResource TreeViewCategoryStyle}"
 										   x:Key="TreeViewDataItemStyleSelector"/>
 	</Window.Resources>
+
+	<i:Interaction.Behaviors>
+		<Behaviors:WindowClosingActionBehavior Command="{Binding ViewClosingActionCommand}"/>
+	</i:Interaction.Behaviors>
 
 	<DockPanel>
 		<Menu DockPanel.Dock="Top">

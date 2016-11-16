@@ -38,7 +38,25 @@ namespace Dictonary.Services
 			}
 		}
 
+		private bool _dataAltered;
+		public bool DataAltered
+		{
+			get
+			{
+				return _dataAltered;
+			}
+			set
+			{
+				if (!value == _dataAltered)
+				{
+					_dataAltered = value;
+					DataAlteredChanged?.Invoke(this, EventArgs.Empty);
+				}
+			}
+		}
+
 		public event EventHandler SelectedItemChanged;
 		public event EventHandler CurrentWordChanged;
+		public event EventHandler DataAlteredChanged;
 	}
 }

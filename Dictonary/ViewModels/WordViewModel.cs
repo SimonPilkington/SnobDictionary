@@ -11,8 +11,6 @@ namespace Dictonary.ViewModels
 {
 	public class WordViewModel : TreeViewItemViewModelBase, IDroppable
 	{
-		private readonly TreeViewDataService<IWordTreeViewItem> _selectedItemService;
-		
 		private bool _isSelected;
 		public bool IsSelected
 		{
@@ -25,7 +23,7 @@ namespace Dictonary.ViewModels
 					NotifyPropertyChanged();
 
 					if (_isSelected)
-						_selectedItemService.SelectedItem = this;
+						DataService.SelectedItem = this;
 				}
 			}
 		}
@@ -58,11 +56,13 @@ namespace Dictonary.ViewModels
 			
 		public BasicCommand RemoveCommand { get; }
 
-		public WordViewModel(string word, IWordTreeViewItem parent, TreeViewDataService<IWordTreeViewItem> selectedItemService)
-			: base(word)
+		public WordViewModel(string word, IWordTreeViewItem parent, TreeViewDataService<IWordTreeViewItem> dataService)
+			: base(word, dataService)
 		{
+			if (parent == null)
+				throw new ArgumentNullException(nameof(parent));
+
 			Parent = parent;
-			_selectedItemService = selectedItemService;
 
 			RemoveCommand = new BasicCommand(_ => Remove());
 		}

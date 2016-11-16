@@ -93,8 +93,11 @@
     <Compile Include="Behaviors\Interfaces\IDraggable.cs" />
     <Compile Include="Behaviors\Interfaces\IDroppable.cs" />
     <Compile Include="Behaviors\KeyPressReactionBehavior.cs" />
+    <Compile Include="Behaviors\WindowClosingActionBehavior.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\WordToDictonaryUriConverter.cs" />
+    <Compile Include="Services\DialogService.cs" />
+    <Compile Include="Services\IDialogService.cs" />
     <Compile Include="Services\TreeViewDataService.cs" />
     <Compile Include="Util\TreeViewHierarchyXmlSerializer.cs" />
     <Compile Include="DataModel\Interfaces\IWordTreeViewItem.cs" />

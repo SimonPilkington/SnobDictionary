@@ -1,6 +1,7 @@
 ﻿using Dictonary.Behaviors.Interfaces;
 using Dictonary.DataModel;
 using Dictonary.DataModel.Interfaces;
+using Dictonary.Services;
 using System;
 using System.Collections.ObjectModel;
 
@@ -23,18 +24,57 @@ namespace Dictonary.ViewModels
 				{
 					_header = value;
 					NotifyPropertyChanged();
+					DataService.DataAltered = true;
 				}
 			}
 		}
 
 		public IWordTreeViewItem Parent { get; set; }
 
-		public virtual ObservableCollection<IWordTreeViewItem> Children { get; set; }
+
+		private ObservableCollection<IWordTreeViewItem> _children;
+		public virtual ObservableCollection<IWordTreeViewItem> Children
+		{
+			get
+			{
+				return _children;
+			}
+			set
+			{
+				if (!ReferenceEquals(value, _children))
+				{
+					if (value != null)
+						value.CollectionChanged += _children_CollectionChanged;
+
+					if (_children != null)
+						_children.CollectionChanged -= _children_CollectionChanged;
+
+					_children = value;
+				}
+			}
+		}
+
+		private void _children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			DataService.DataAltered = true;
+		}
 		#endregion
 
-		public TreeViewItemViewModelBase(string header)
+		public TreeViewDataService<IWordTreeViewItem> DataService
 		{
+			get;
+		}
+
+		public TreeViewItemViewModelBase(string header, TreeViewDataService<IWordTreeViewItem> dataService)
+		{
+			if (header == null)
+				throw new ArgumentNullException(nameof(header));
+
+			if (dataService == null)
+				throw new ArgumentNullException(nameof(dataService));
+
 			_header = header;
+			DataService = dataService;
 		}
 
 		#region IDraggable

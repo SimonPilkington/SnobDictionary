@@ -4,6 +4,9 @@ using System.Collections.ObjectModel;
 using Dictonary.Services;
 using Dictonary.Util;
 using Dictonary.DataModel.Interfaces;
+using System;
+using System.Windows;
+using System.ComponentModel;
 
 namespace Dictonary.ViewModels
 {
@@ -13,6 +16,7 @@ namespace Dictonary.ViewModels
 		public WordCategoryViewModel MainCategory { get; }
 
 		public TreeViewDataService<IWordTreeViewItem> DataService { get; }
+		public IDialogService DialogService { get; set; }
 		
 		public string CurrentWord
 		{
@@ -49,11 +53,13 @@ namespace Dictonary.ViewModels
 		
 		public BasicCommand SaveWordTreeCommand { get; }
 		public BasicCommand FindWordCommand { get; }
+		public BasicCommand ViewClosingActionCommand { get; }
 
 		public MainViewModel()
 		{
 			SaveWordTreeCommand = new BasicCommand(SaveWordTree);
 			FindWordCommand = new BasicCommand(FindWord);
+			ViewClosingActionCommand = new BasicCommand(WindowClosingAction);
 
 			DataService = new TreeViewDataService<IWordTreeViewItem>();
 			DataService.SelectedItemChanged += (o, e) => CurrentWord = DataService.SelectedItem.Text;
@@ -73,11 +79,36 @@ namespace Dictonary.ViewModels
 		{
 			var serializer = new TreeViewHierarchyXmlSerializer(this);
 			serializer.SerializeToXml();
+
+			DataService.DataAltered = false;
 		}
 
 		private void FindWord(object _)
 		{
 			CurrentWord = SearchBoxString;
+		}
+
+		private void WindowClosingAction(object cancelEventArgsObject)
+		{
+			var cancelEventArgs = cancelEventArgsObject as CancelEventArgs;
+			
+			if (cancelEventArgs == null)
+				throw new ArgumentException(nameof(cancelEventArgsObject));
+
+			if (!DataService.DataAltered)
+				return;
+
+			MessageBoxResult result = DialogService.ShowMessageBox("The word tree has changed. Save changes?", "Warning", MessageBoxButton.YesNoCancel, MessageBoxImage.None);
+
+			switch (result)
+			{
+				case MessageBoxResult.Yes:
+					SaveWordTree(null);
+					break;
+				case MessageBoxResult.Cancel:
+					cancelEventArgs.Cancel = true;
+					break;
+			}
 		}
 	}
 }

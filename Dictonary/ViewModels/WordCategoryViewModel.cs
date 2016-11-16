@@ -46,23 +46,17 @@ namespace Dictonary.ViewModels
 				}
 			}
 		}
-
-		public TreeViewDataService<IWordTreeViewItem> DataService
-		{
-			get;
-		}
-
+		
 		public BasicCommand AddWordToCategoryCommand { get; }
 		public BasicCommand AddSubcategoryCommand { get; }
 		public BasicCommand StartRenameCommand { get; }
 		public BasicCommand StopRenameCommand { get; }
 
 		public WordCategoryViewModel(string header, IWordTreeViewItem parent, TreeViewDataService<IWordTreeViewItem> dataService, bool dragEnabled)
-			: base (header)
+			: base (header, dataService)
 		{
 			Parent = parent;
 			DragEnabled = dragEnabled;
-			DataService = dataService;
 
 			Children = new ObservableCollection<IWordTreeViewItem>();
 
