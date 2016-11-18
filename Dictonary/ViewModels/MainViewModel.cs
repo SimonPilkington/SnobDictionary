@@ -7,12 +7,13 @@ using Dictonary.DataModel.Interfaces;
 using System;
 using System.Windows;
 using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Dictonary.ViewModels
 {
 	public class MainViewModel : NotifyPropertyChangedBase
 	{
-        public ObservableCollection<IWordTreeViewItem> TreeViewItems { get; }
+        public ICollectionView TreeViewItems { get; }
 		public WordCategoryViewModel MainCategory { get; }
 
 		public TreeViewDataService<IWordTreeViewItem> DataService { get; }
@@ -50,6 +51,21 @@ namespace Dictonary.ViewModels
 				}
 			}
 		}
+
+		private string _filter;
+		public string Filter
+		{
+			get { return _filter; }
+			set
+			{
+				if (value != _filter)
+				{
+					_filter = value;
+					NotifyPropertyChanged();
+					ApplyFilter(TreeViewItems);
+				}
+			}
+		}
 		
 		public BasicCommand SaveWordTreeCommand { get; }
 		public BasicCommand FindWordCommand { get; }
@@ -72,7 +88,7 @@ namespace Dictonary.ViewModels
 			MainCategory.IsExpanded = true;
 			MainCategory.StartRenameCommand.Enabled = false;
 
-			TreeViewItems = new ObservableCollection<IWordTreeViewItem> { MainCategory };
+			TreeViewItems = CollectionViewSource.GetDefaultView(new ObservableCollection<IWordTreeViewItem> { MainCategory });
 		}
 		
 		private void SaveWordTree(object _)
@@ -109,6 +125,27 @@ namespace Dictonary.ViewModels
 					cancelEventArgs.Cancel = true;
 					break;
 			}
+		}
+
+		private bool FilterPredicate(object itemObject)
+		{
+			var item = (IWordTreeViewItem)itemObject;
+
+			return (item.ChildrenView != null && !item.ChildrenView.IsEmpty) || item.Text.Contains(Filter);
+		}
+
+		private void ApplyFilter(ICollectionView collectionView)
+		{
+			if (string.IsNullOrWhiteSpace(Filter))
+				return;
+			
+			foreach (IWordTreeViewItem item in collectionView.SourceCollection)
+			{
+				if (item.ChildrenView != null)
+					ApplyFilter(item.ChildrenView);
+			}
+
+			collectionView.Filter = FilterPredicate;
 		}
 	}
 }

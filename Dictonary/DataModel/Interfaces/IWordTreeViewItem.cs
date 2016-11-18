@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Dictonary.DataModel.Interfaces
 {
@@ -8,5 +9,6 @@ namespace Dictonary.DataModel.Interfaces
 
 		IWordTreeViewItem Parent { get; set; }
 		ObservableCollection<IWordTreeViewItem> Children { get; }
+		ICollectionView ChildrenView { get; }
 	}
 }

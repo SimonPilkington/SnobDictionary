@@ -4,6 +4,8 @@ using Dictonary.DataModel.Interfaces;
 using Dictonary.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Dictonary.ViewModels
 {
@@ -32,6 +34,8 @@ namespace Dictonary.ViewModels
 		public IWordTreeViewItem Parent { get; set; }
 
 
+		public ICollectionView ChildrenView { get; private set; }
+
 		private ObservableCollection<IWordTreeViewItem> _children;
 		public virtual ObservableCollection<IWordTreeViewItem> Children
 		{
@@ -50,6 +54,10 @@ namespace Dictonary.ViewModels
 						_children.CollectionChanged -= _children_CollectionChanged;
 
 					_children = value;
+					ChildrenView = CollectionViewSource.GetDefaultView(_children);
+
+					NotifyPropertyChanged();
+					NotifyPropertyChanged(nameof(ChildrenView));
 				}
 			}
 		}

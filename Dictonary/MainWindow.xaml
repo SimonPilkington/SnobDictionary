@@ -99,9 +99,15 @@
 				<ColumnDefinition Width="0.25*"/>
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
-			<TreeView ItemsSource="{Binding TreeViewItems}" BorderBrush="Transparent" 
+			<StackPanel>
+				<DockPanel DockPanel.Dock="Top" Margin="5,10,5,5">
+					<Label Content="Filter:"/>
+					<TextBox VerticalAlignment="Center" Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+				</DockPanel>
+				<TreeView ItemsSource="{Binding TreeViewItems}" BorderBrush="Transparent" 
 						  ItemTemplateSelector="{StaticResource TreeViewDataTemplateSelector}"
 						  ItemContainerStyleSelector="{StaticResource TreeViewDataItemStyleSelector}"/>
+			</StackPanel>
 			<DockPanel Grid.Column="1" >
 				<DockPanel DockPanel.Dock="Top" Margin="10">
 					<Label Content="Look up word:"/>
