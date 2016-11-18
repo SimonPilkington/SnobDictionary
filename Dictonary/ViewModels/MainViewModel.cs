@@ -135,17 +135,17 @@ namespace Dictonary.ViewModels
 		}
 
 		private void ApplyFilter(ICollectionView collectionView)
-		{
-			if (string.IsNullOrWhiteSpace(Filter))
-				return;
-			
+		{			
 			foreach (IWordTreeViewItem item in collectionView.SourceCollection)
 			{
 				if (item.ChildrenView != null)
 					ApplyFilter(item.ChildrenView);
 			}
 
-			collectionView.Filter = FilterPredicate;
+			if (string.IsNullOrWhiteSpace(Filter))
+				collectionView.Filter = null;
+			else
+				collectionView.Filter = FilterPredicate;
 		}
 	}
 }
