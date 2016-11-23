@@ -51,6 +51,7 @@ namespace Dictonary.ViewModels
 		public BasicCommand AddSubcategoryCommand { get; }
 		public BasicCommand StartRenameCommand { get; }
 		public BasicCommand StopRenameCommand { get; }
+		public BasicCommand SortCategoryCommand { get; }
 
 		public WordCategoryViewModel(string header, IWordTreeViewItem parent, TreeViewDataService<IWordTreeViewItem> dataService, bool dragEnabled)
 			: base (header, dataService)
@@ -64,6 +65,7 @@ namespace Dictonary.ViewModels
 			AddSubcategoryCommand = new BasicCommand(AddSubcategory);
 			StartRenameCommand = new BasicCommand(StartRename);
 			StopRenameCommand = new BasicCommand(StopRename);
+			SortCategoryCommand = new BasicCommand(SortCategory);
 		}
 
 		public WordCategoryViewModel(string header, IWordTreeViewItem parent, TreeViewDataService<IWordTreeViewItem> dataService) : this (header, parent, dataService, true)
@@ -101,6 +103,25 @@ namespace Dictonary.ViewModels
 		private void StopRename(object _)
 		{
 			IsRenaming = false;
+		}
+
+		private void SortCategory(object _)
+		{
+			var sortableList = new List<IWordTreeViewItem>(Children);
+			sortableList.Sort(Comparer<IWordTreeViewItem>.Create((x, y) =>
+			{
+				// Categories first
+				if (x is WordCategoryViewModel && !(y is WordCategoryViewModel))
+					return -1;
+
+				if (!(x is WordCategoryViewModel) && y is WordCategoryViewModel)
+					return 1;
+
+				return x.Text.CompareTo(y.Text);
+			}
+			));
+
+			Children = new ObservableCollection<IWordTreeViewItem>(sortableList);
 		}
 
 		#region IDraggable

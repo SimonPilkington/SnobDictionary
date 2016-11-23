@@ -23,12 +23,14 @@
 	<Window.Resources>
 		<HierarchicalDataTemplate ItemsSource="{Binding Children}" x:Key="TreeViewCategoryTemplate">
 			<StackPanel>
-				<TextBlock Text="{Binding Text}" Visibility="{Binding IsRenaming, Converter={StaticResource ReverseBoolToVisibilityConverter}}">
+				<TextBlock Text="{Binding Text}" Visibility="{Binding IsRenaming, Converter={StaticResource ReverseBoolToVisibilityConverter}}"
+						   TextDecorations="Underline">
 					<TextBlock.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Add new subcategory" Command="{Binding AddSubcategoryCommand}" CommandParameter="{Binding .}"/>
 							<MenuItem Header="Add current word to category" Command="{Binding AddWordToCategoryCommand}" CommandParameter="{Binding .}"/>
 							<MenuItem Header="Rename" Command="{Binding StartRenameCommand}"/>
+							<MenuItem Header="Sort" Command="{Binding SortCategoryCommand}"/>
 						</ContextMenu>
 					</TextBlock.ContextMenu>
 					<i:Interaction.Behaviors>
@@ -90,8 +92,9 @@
 
 	<DockPanel>
 		<Menu DockPanel.Dock="Top">
-			<MenuItem Header="File">
-				<MenuItem Header="Save" Command="{Binding SaveWordTreeCommand}"/>
+			<MenuItem Header="_File">
+				<MenuItem Header="_Save" Command="{Binding SaveWordTreeCommand}"/>
+				<MenuItem Header="S_ort all categories" Command="{Binding SortAllCategoriesCommand}"/>
 			</MenuItem>
 		</Menu>
 		<Grid DockPanel.Dock="Bottom">

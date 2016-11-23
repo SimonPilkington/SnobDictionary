@@ -68,12 +68,14 @@ namespace Dictonary.ViewModels
 		}
 		
 		public BasicCommand SaveWordTreeCommand { get; }
+		public BasicCommand SortAllCategoriesCommand { get; }
 		public BasicCommand FindWordCommand { get; }
 		public BasicCommand ViewClosingActionCommand { get; }
 
 		public MainViewModel()
 		{
 			SaveWordTreeCommand = new BasicCommand(SaveWordTree);
+			SortAllCategoriesCommand = new BasicCommand(SortAllCategories);
 			FindWordCommand = new BasicCommand(FindWord);
 			ViewClosingActionCommand = new BasicCommand(WindowClosingAction);
 
@@ -146,6 +148,24 @@ namespace Dictonary.ViewModels
 				collectionView.Filter = null;
 			else
 				collectionView.Filter = FilterPredicate;
+		}
+
+		private void SortAllCategories(object _)
+		{
+			RecursiveSortCategories(MainCategory);
+		}
+
+		private void RecursiveSortCategories(WordCategoryViewModel category)
+		{
+			foreach(var child in category.Children)
+			{
+				var subcategory = child as WordCategoryViewModel;
+
+				if (subcategory != null)
+					RecursiveSortCategories(subcategory);
+			}
+
+			category.SortCategoryCommand.Execute(null);
 		}
 	}
 }

@@ -54,7 +54,10 @@ namespace Dictonary.ViewModels
 						_children.CollectionChanged -= _children_CollectionChanged;
 
 					_children = value;
+
+					var filter = ChildrenView?.Filter;
 					ChildrenView = CollectionViewSource.GetDefaultView(_children);
+					ChildrenView.Filter = filter;
 
 					NotifyPropertyChanged();
 					NotifyPropertyChanged(nameof(ChildrenView));
