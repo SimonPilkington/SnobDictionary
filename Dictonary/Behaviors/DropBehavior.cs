@@ -63,17 +63,15 @@ namespace Dictonary.Behaviors
 
 			e.Effects = DragDropEffects.None;
 
-			if (dropData != null)
+			if (dropData != null &&
+				dropData != AssociatedObject.DataContext)
 			{
-				if (dropData != AssociatedObject.DataContext)
-				{
-					DragDropEffects possibleEffects = dropTarget.GetAllowedEffects(dropType);
+				DragDropEffects possibleEffects = dropTarget.GetAllowedEffects(dropType);
 
-					if (e.KeyStates.HasFlag(DragDropKeyStates.ControlKey))
-						e.Effects = possibleEffects & DragDropEffects.Copy;
-					else
-						e.Effects = possibleEffects & (DragDropEffects.Move | DragDropEffects.Copy);
-				}
+				if (e.KeyStates.HasFlag(DragDropKeyStates.ControlKey))
+					e.Effects = possibleEffects & DragDropEffects.Copy;
+				else
+					e.Effects = possibleEffects & (DragDropEffects.Move | DragDropEffects.Copy);
 			}
 		}
 

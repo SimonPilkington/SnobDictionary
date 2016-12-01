@@ -72,7 +72,7 @@ namespace Dictonary.ViewModels
 		#endregion
 
 		#region IDroppable
-		private static readonly HashSet<Type> _droppableTypes = new HashSet<Type>(new[] { typeof(WordViewModel) });
+		private static readonly HashSet<Type> _droppableTypes = new HashSet<Type>(new[] { typeof(WordViewModel), typeof(string) });
 		public IReadOnlyCollection<Type> DroppableTypes => _droppableTypes;
 		
 		public DragDropEffects GetAllowedEffects(Type type)
@@ -80,18 +80,33 @@ namespace Dictonary.ViewModels
 			if (type == typeof(WordViewModel))
 				return DragDropEffects.Move;
 
+			if (type == typeof(string))
+				return DragDropEffects.Copy;
+
 			return DragDropEffects.None;
 		}
 
 		public void Drop(object o)
 		{
-			var movedItem = o as IWordTreeViewItem;
+			var treeViewItem = o as IWordTreeViewItem;
 
-			if (o != null)
+			if (treeViewItem != null)
 			{
 				int myIndex = Parent.Children.IndexOf(this);
-				Parent.Children.Insert(myIndex + 1, movedItem);
-				movedItem.Parent = Parent;
+				Parent.Children.Insert(myIndex + 1, treeViewItem);
+				treeViewItem.Parent = Parent;
+			}
+
+			var str = o as string;
+
+			if (str != null)
+			{
+				int myIndex = Parent.Children.IndexOf(this);
+
+				var newItem = new WordViewModel(str, Parent, DataService);
+
+				Parent.Children.Insert(myIndex + 1, newItem);
+				newItem.Parent = Parent;
 			}
 		}
 		#endregion
